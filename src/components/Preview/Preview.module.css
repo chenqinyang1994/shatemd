@@ -1,0 +1,159 @@
+.preview {
+  flex: 1;
+  overflow: auto;
+  background-color: #ffffff;
+  /* 性能优化：提升滚动流畅度 */
+  will-change: scroll-position;
+  transform: translateZ(0);
+}
+
+.previewContent {
+  padding: 40px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #24292e;
+}
+
+.emptyState {
+  text-align: center;
+  color: #6a737d;
+  padding: 60px 20px;
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 18px;
+}
+
+/* Markdown 样式 */
+.previewContent :global(h1) {
+  font-size: 2em;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eaecef;
+  font-weight: 600;
+}
+
+.previewContent :global(h2) {
+  font-size: 1.5em;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #eaecef;
+  font-weight: 600;
+}
+
+.previewContent :global(h3) {
+  font-size: 1.25em;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+
+.previewContent :global(h4),
+.previewContent :global(h5),
+.previewContent :global(h6) {
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  font-weight: 600;
+}
+
+.previewContent :global(p) {
+  margin-top: 0;
+  margin-bottom: 1em;
+}
+
+.previewContent :global(ul),
+.previewContent :global(ol) {
+  margin-top: 0;
+  margin-bottom: 1em;
+  padding-left: 2em;
+}
+
+.previewContent :global(li) {
+  margin-bottom: 0.25em;
+}
+
+.previewContent :global(code) {
+  background-color: rgba(27, 31, 35, 0.05);
+  border-radius: 3px;
+  font-size: 85%;
+  margin: 0;
+  padding: 0.2em 0.4em;
+  font-family: 'SFMono-Regular', 'Consolas', 'Liberation Mono', 'Menlo', monospace;
+}
+
+.previewContent :global(pre) {
+  border-radius: 6px;
+  padding: 0;
+  overflow: auto;
+  margin-bottom: 1em;
+}
+
+.previewContent :global(pre code) {
+  display: block;
+  padding: 16px;
+  line-height: 1.5;
+}
+
+.previewContent :global(.hljs) {
+  padding: 16px;
+  border-radius: 6px;
+}
+
+.previewContent :global(blockquote) {
+  border-left: 4px solid #dfe2e5;
+  color: #6a737d;
+  margin: 0 0 1em 0;
+  padding: 0 1em;
+}
+
+.previewContent :global(table) {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.previewContent :global(table th),
+.previewContent :global(table td) {
+  border: 1px solid #dfe2e5;
+  padding: 6px 13px;
+}
+
+.previewContent :global(table th) {
+  background-color: #f6f8fa;
+  font-weight: 600;
+}
+
+.previewContent :global(table tr:nth-child(2n)) {
+  background-color: #f6f8fa;
+}
+
+.previewContent :global(hr) {
+  background-color: #e1e4e8;
+  border: 0;
+  height: 2px;
+  margin: 1.5em 0;
+  padding: 0;
+}
+
+.previewContent :global(img) {
+  max-width: 100%;
+  height: auto;
+}
+
+.previewContent :global(a) {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.previewContent :global(a:hover) {
+  text-decoration: underline;
+}

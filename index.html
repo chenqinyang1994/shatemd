@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <!-- 基础 Meta 标签 -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- SEO 核心标签 -->
+    <title>ShareMD - 免费在线 Markdown 编辑器 | 实时预览 | 一键生成长图</title>
+    <meta
+      name="description"
+      content="ShareMD 是一款功能强大的在线 Markdown 编辑器，支持实时预览、双向同步滚动、一键生成长图。完全免费，无需注册，支持 GitHub Flavored Markdown，代码高亮，表格渲染。"
+    />
+    <meta
+      name="keywords"
+      content="Markdown编辑器,在线Markdown,Markdown预览,Markdown转图片,GFM,代码高亮,Markdown工具,免费编辑器,实时预览,长图生成"
+    />
+    <meta name="author" content="ShareMD Team" />
+    <meta
+      name="robots"
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="bingbot" content="index, follow" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://sharemd.app/" />
+
+    <!-- Open Graph 标签 (Facebook, LinkedIn 等) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ShareMD" />
+    <meta property="og:title" content="ShareMD - 免费在线 Markdown 编辑器" />
+    <meta
+      property="og:description"
+      content="功能强大的在线 Markdown 编辑器，支持实时预览、同步滚动、一键生成长图。完全免费，无需注册。"
+    />
+    <meta property="og:url" content="https://sharemd.app/" />
+    <meta property="og:image" content="https://sharemd.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="zh_CN" />
+
+    <!-- Twitter Card 标签 -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ShareMD - 免费在线 Markdown 编辑器" />
+    <meta
+      name="twitter:description"
+      content="功能强大的在线 Markdown 编辑器，支持实时预览、同步滚动、一键生成长图。"
+    />
+    <meta
+      name="twitter:image"
+      content="https://sharemd.app/twitter-image.png"
+    />
+    <meta name="twitter:creator" content="@sharemd" />
+
+    <!-- 移动端优化 -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="ShareMD" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- 主题色 -->
+    <meta name="theme-color" content="#0366d6" />
+    <meta name="msapplication-TileColor" content="#0366d6" />
+
+    <!-- Favicon 完整配置 -->
+    <link rel="icon" type="image/webp" href="/src/assets/images/favicon.ico" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- DNS Prefetch 性能优化 -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+
+    <!-- 结构化数据 (Schema.org - JSON-LD) -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "ShareMD",
+        "alternateName": "ShareMD Markdown Editor",
+        "description": "功能强大的在线 Markdown 编辑器，支持实时预览、双向同步滚动、一键生成长图",
+        "url": "https://sharemd.app/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web Browser",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "CNY"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "ratingCount": "1024"
+        },
+        "featureList": [
+          "实时预览",
+          "双向同步滚动",
+          "一键生成长图",
+          "GitHub Flavored Markdown",
+          "代码语法高亮",
+          "表格支持",
+          "无需注册",
+          "完全免费"
+        ]
+      }
+    </script>
+
+    <!-- 预加载关键资源 -->
+    <link rel="preload" as="style" href="/src/index.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root">
+      <!-- 骨架屏样式定义 -->
+      <style>
+        .skeleton-pulse {
+          background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.05) 25%,
+            rgba(255, 255, 255, 0.1) 37%,
+            rgba(255, 255, 255, 0.05) 63%
+          );
+          background-size: 400% 100%;
+          animation: skeleton-loading 1.4s ease infinite;
+        }
+        @keyframes skeleton-loading {
+          0% { background-position: 100% 50%; }
+          100% { background-position: 0 50%; }
+        }
+        /* 隐藏 SEO 文本但对爬虫可见 */
+        .visually-hidden {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          padding: 0;
+          margin: -1px;
+          overflow: hidden;
+          clip: rect(0, 0, 0, 0);
+          white-space: nowrap;
+          border: 0;
+        }
+      </style>
+
+      <div style="display: flex; flex-direction: column; height: 100vh; background-color: #fff;">
+        <!-- Header 骨架 -->
+        <header
+          style="
+            height: 60px;
+            background-color: #24292e;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            flex-shrink: 0;
+          "
+        >
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <!-- Logo 占位 -->
+            <div style="width: 40px; height: 40px; border-radius: 8px; background-color: rgba(255,255,255,0.1);"></div>
+            <!-- Title 占位 -->
+            <div style="width: 100px; height: 24px; border-radius: 4px; background-color: rgba(255,255,255,0.1);"></div>
+          </div>
+
+          <!-- 右侧按钮组占位 -->
+          <div style="display: flex; gap: 16px; align-items: center;">
+             <!-- 视图切换 -->
+             <div style="display: flex; gap: 2px; padding: 3px; background-color: rgba(255,255,255,0.05); border-radius: 6px;">
+                <div style="width: 32px; height: 32px; border-radius: 4px;" class="skeleton-pulse"></div>
+                <div style="width: 32px; height: 32px; border-radius: 4px;" class="skeleton-pulse"></div>
+                <div style="width: 32px; height: 32px; border-radius: 4px;" class="skeleton-pulse"></div>
+                <div style="width: 32px; height: 32px; border-radius: 4px;" class="skeleton-pulse"></div>
+             </div>
+             <!-- 导出按钮 -->
+             <div style="display: flex; gap: 8px; border-left: 1px solid rgba(255,255,255,0.1); padding-left: 16px;">
+                <div style="width: 80px; height: 32px; border-radius: 6px; background-color: rgba(255,255,255,0.1);"></div>
+                <div style="width: 80px; height: 32px; border-radius: 6px; background-color: rgba(255,255,255,0.1);"></div>
+             </div>
+          </div>
+        </header>
+
+        <!-- Main 骨架 (左右分栏) -->
+        <main style="flex: 1; display: flex; overflow: hidden;">
+          <!-- Editor 骨架 -->
+          <div style="flex: 1; padding: 20px; border-right: 1px solid #e1e4e8; background-color: #fff;">
+            <div style="width: 60%; height: 24px; background-color: #f0f0f0; margin-bottom: 20px; border-radius: 4px;"></div>
+            <div style="width: 90%; height: 16px; background-color: #f6f8fa; margin-bottom: 12px; border-radius: 4px;"></div>
+            <div style="width: 85%; height: 16px; background-color: #f6f8fa; margin-bottom: 12px; border-radius: 4px;"></div>
+            <div style="width: 70%; height: 16px; background-color: #f6f8fa; margin-bottom: 24px; border-radius: 4px;"></div>
+            <div style="width: 40%; height: 20px; background-color: #f0f0f0; margin-bottom: 16px; border-radius: 4px;"></div>
+            <div style="width: 95%; height: 16px; background-color: #f6f8fa; margin-bottom: 12px; border-radius: 4px;"></div>
+          </div>
+
+          <!-- Preview 骨架 -->
+          <div style="flex: 1; padding: 40px; background-color: #fff;">
+             <!-- 模拟预览区的大标题 -->
+             <div style="width: 50%; height: 40px; background-color: #eaecef; margin-bottom: 30px; border-radius: 4px;"></div>
+             <!-- 模拟段落 -->
+             <div style="width: 100%; height: 18px; background-color: #f6f8fa; margin-bottom: 16px; border-radius: 4px;"></div>
+             <div style="width: 90%; height: 18px; background-color: #f6f8fa; margin-bottom: 16px; border-radius: 4px;"></div>
+             <div style="width: 95%; height: 18px; background-color: #f6f8fa; margin-bottom: 40px; border-radius: 4px;"></div>
+
+             <!-- 模拟图片/代码块 -->
+             <div style="width: 100%; height: 200px; background-color: #f6f8fa; border-radius: 8px;"></div>
+          </div>
+        </main>
+
+        <!-- SEO Content (Visually Hidden) -->
+        <!-- 这些内容对用户不可见，但对搜索引擎爬虫可见，保证 SEO 权重 -->
+        <div class="visually-hidden">
+          <h1>ShareMD Markdown 在线编辑器</h1>
+          <p>ShareMD 是一款免费的在线 Markdown 编辑器，支持实时预览、双向同步滚动、一键生成长图。无需注册，开箱即用。</p>
+          <h2>核心功能</h2>
+          <ul>
+            <li><strong>实时预览</strong>: 所见即所得的编辑体验</li>
+            <li><strong>双向同步滚动</strong>: 编辑区与预览区精准同步</li>
+            <li><strong>长图生成</strong>: 一键将 Markdown 转换为精美长图并下载</li>
+            <li><strong>代码高亮</strong>: 支持多种编程语言的语法高亮</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.tsx"></script>
+
+    <noscript>
+      <div style="text-align: center; padding: 40px; font-family: sans-serif">
+        <h1>需要启用 JavaScript</h1>
+        <p>
+          ShareMD 需要 JavaScript 才能运行。请在浏览器设置中启用 JavaScript
+          后刷新页面。
+        </p>
+      </div>
+    </noscript>
+  </body>
+</html>

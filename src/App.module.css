@@ -1,0 +1,129 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.header {
+  height: 60px;
+  background-color: #24292e;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logoWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  /* 性能优化：使用 GPU 加速 */
+  transform: translateZ(0);
+  /* 平滑过渡 */
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.logoWrapper:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  transform: translateZ(0) scale(1.05);
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* 确保图片清晰 */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  /* 提升文本渲染质量 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.headerToolbar {
+  display: flex;
+  align-items: center;
+}
+
+/* 响应式：小屏幕优化 */
+@media (max-width: 768px) {
+  .logoWrapper {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+  }
+
+  .title {
+    font-size: 16px;
+  }
+
+  .headerLeft {
+    gap: 8px;
+  }
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+
+/* 全屏模式 - Main 占满整个视口 */
+.app[data-view-mode="fullscreen"] .main {
+  height: 100vh;
+}
+
+.editorPanel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.previewPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 视图模式切换时的平滑过渡动画 */
+/* 只在模式切换时添加动画，拖动时不触发 */
+.app[data-transitioning="true"] .editorPanel {
+  transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+.app[data-transitioning="true"] .previewPanel {
+  transition: flex 0.3s ease, opacity 0.3s ease;
+}
+
+/* 仅编辑区模式 */
+.app[data-view-mode="editor"] .editorPanel {
+  width: 100% !important;
+}
+
+/* 仅预览区模式 */
+.app[data-view-mode="preview"] .previewPanel {
+  width: 100%;
+}

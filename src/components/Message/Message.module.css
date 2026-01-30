@@ -1,0 +1,64 @@
+.messageWrapper {
+  position: fixed;
+  top: 80px; /* 稍微下移，避开可能的顶部 UI，或者就在顶部悬浮 */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  pointer-events: none;
+  animation: messageSlideIn 0.4s cubic-bezier(0.21, 1.02, 0.73, 1);
+}
+
+.messageWrapper.fadeOut {
+  animation: messageFadeOut 0.3s ease forwards;
+}
+
+.message {
+  /* 深色玻璃质感 */
+  background: rgba(36, 41, 46, 0.9);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 10px 20px;
+  border-radius: 99px; /* 胶囊形状 */
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.1); /* 极细内描边 */
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  pointer-events: auto;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #58a6ff; /* 强调色 */
+}
+
+.content {
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+}
+
+/* 键盘按键样式 (可选：如果提示中有 "ESC" 这样的文字，可以特殊处理，这里作为通用样式先不加) */
+
+@keyframes messageSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+@keyframes messageFadeOut {
+  to {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-10px);
+  }
+}

@@ -1,0 +1,37 @@
+.editor {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.editorContainer {
+  flex: 1;
+  overflow: auto;
+  font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.editorContainer :global(.cm-editor) {
+  height: 100%;
+  font-family: inherit;
+}
+
+.editorContainer :global(.cm-scroller) {
+  overflow: auto;
+  font-family: inherit;
+  /* 性能优化：提升滚动流畅度 */
+  will-change: scroll-position;
+  transform: translateZ(0);
+}
+
+.editorContainer :global(.cm-content) {
+  padding: 20px;
+  font-family: inherit;
+}
+
+.editorContainer :global(.cm-line) {
+  padding: 0 4px;
+}

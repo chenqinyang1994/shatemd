@@ -1,0 +1,57 @@
+.divider {
+  /* 容器宽度设置为 12px，提供充足的鼠标抓取热区 */
+  width: 12px;
+  cursor: col-resize;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
+  /* 使得容器背景透明，不遮挡可能的内容，但通常是背景色 */
+  background-color: transparent;
+  /* 居中显示视觉线 */
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  /* 为了布局计算准确，这里使用负 margin 抵消部分宽度，或者让父级布局考虑这 12px */
+  /* 在当前 flex 布局下，直接作为 flex item 即可，不需要负 margin，只是会占用 12px 空间 */
+  /* 如果不想占用太多空间，可以设为 0 宽，然后用 visible overflow，但 Flexbox 下建议实占位 */
+  margin: 0;
+}
+
+/* 核心视觉线：默认是一条细线 */
+.divider::before {
+  content: '';
+  width: 1px;
+  background-color: #d1d5da; /* 默认可见的灰色，比背景稍深 */
+  transition: all 0.2s ease;
+}
+
+/* Hover 状态：线变粗变蓝 */
+.divider:hover::before,
+.divider.dragging::before {
+  width: 2px;
+  background-color: #0366d6;
+  box-shadow: 0 0 4px rgba(3, 102, 214, 0.4); /* 发光效果增强感知 */
+}
+
+/* 拖拽手柄图标 (Handle) */
+/* 为了增强“可拖拽”的暗示，我们在 Hover 时显示一个小图标 */
+.divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 24px;
+  background-color: #24292e; /* 深色手柄 */
+  border-radius: 4px;
+  opacity: 0; /* 默认隐藏 */
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none; /* 不干扰鼠标事件 */
+}
+
+/* Hover 或 Dragging 时显示手柄 */
+.divider:hover::after,
+.divider.dragging::after {
+  opacity: 1;
+}
