@@ -177,6 +177,10 @@ sharemd/
 
 ---
 
+## 🌐 在线体验
+
+🎉 **已部署到 Cloudflare Pages**，访问即用：[sharemd.pages.dev](https://sharemd.pages.dev)
+
 ## 🚀 快速开始
 
 ### 环境要求
