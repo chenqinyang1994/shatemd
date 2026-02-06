@@ -9,33 +9,54 @@ describe('BackToTop', () => {
   let previewRef: React.RefObject<HTMLElement>
   let editorScrollTop: number
   let previewScrollTop: number
+  let rafCallbacks: Array<FrameRequestCallback>
 
   beforeEach(() => {
     editorElement = document.createElement('div')
     previewElement = document.createElement('div')
     editorScrollTop = 0
     previewScrollTop = 0
+    rafCallbacks = []
 
     // 使用 getter/setter 模拟可变的 scrollTop
     Object.defineProperty(editorElement, 'scrollTop', {
       get: () => editorScrollTop,
-      set: (v) => { editorScrollTop = v },
+      set: (v) => { editorScrollTop = Math.max(0, v) },
       configurable: true,
     })
 
     Object.defineProperty(previewElement, 'scrollTop', {
       get: () => previewScrollTop,
-      set: (v) => { previewScrollTop = v },
+      set: (v) => { previewScrollTop = Math.max(0, v) },
       configurable: true,
     })
 
     editorRef = { current: editorElement }
     previewRef = { current: previewElement }
+
+    // Mock requestAnimationFrame to allow manual stepping
+    vi.spyOn(window, 'requestAnimationFrame').mockImplementation((cb) => {
+      rafCallbacks.push(cb)
+      return rafCallbacks.length
+    })
   })
 
   afterEach(() => {
     vi.restoreAllMocks()
   })
+
+  // Helper: flush all pending requestAnimationFrame callbacks (one round)
+  function flushRAF() {
+    const cbs = rafCallbacks.splice(0)
+    cbs.forEach(cb => cb(performance.now()))
+  }
+
+  // Helper: run RAF frames until scrollTop reaches 0 or max iterations
+  function flushAllRAFUntilDone(maxFrames = 200) {
+    for (let i = 0; i < maxFrames && rafCallbacks.length > 0; i++) {
+      flushRAF()
+    }
+  }
 
   it('should not render when scroll is less than 300', () => {
     render(<BackToTop editorRef={editorRef} previewRef={previewRef} />)
@@ -88,24 +109,24 @@ describe('BackToTop', () => {
   })
 
   it('should scroll both panels to top when clicked', () => {
-    const editorScrollToSpy = vi.fn()
-    const previewScrollToSpy = vi.fn()
-
-    editorElement.scrollTo = editorScrollToSpy
-    previewElement.scrollTo = previewScrollToSpy
-
     render(<BackToTop editorRef={editorRef} previewRef={previewRef} />)
 
     // 使按钮可见
     editorScrollTop = 400
+    previewScrollTop = 400
     act(() => {
       editorElement.dispatchEvent(new Event('scroll'))
     })
 
     fireEvent.click(screen.getByLabelText('回到顶部'))
 
-    expect(editorScrollToSpy).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' })
-    expect(previewScrollToSpy).toHaveBeenCalledWith({ top: 0, behavior: 'smooth' })
+    // Run all animation frames until done
+    act(() => {
+      flushAllRAFUntilDone()
+    })
+
+    expect(editorScrollTop).toBe(0)
+    expect(previewScrollTop).toBe(0)
   })
 
   it('should have correct title attribute', () => {
@@ -149,5 +170,184 @@ describe('BackToTop', () => {
     expect(() => {
       render(<BackToTop editorRef={nullEditorRef} previewRef={nullPreviewRef} />)
     }).not.toThrow()
+  })
+
+  it('should call onScrollStart when scrolling to top starts', () => {
+    const onScrollStart = vi.fn()
+    const onScrollEnd = vi.fn()
+
+    render(
+      <BackToTop
+        editorRef={editorRef}
+        previewRef={previewRef}
+        onScrollStart={onScrollStart}
+        onScrollEnd={onScrollEnd}
+      />
+    )
+
+    // 使按钮可见
+    editorScrollTop = 400
+    act(() => {
+      editorElement.dispatchEvent(new Event('scroll'))
+    })
+
+    fireEvent.click(screen.getByLabelText('回到顶部'))
+
+    expect(onScrollStart).toHaveBeenCalledTimes(1)
+  })
+
+  it('should call onScrollEnd when both areas finish animating to top', () => {
+    const onScrollStart = vi.fn()
+    const onScrollEnd = vi.fn()
+
+    render(
+      <BackToTop
+        editorRef={editorRef}
+        previewRef={previewRef}
+        onScrollStart={onScrollStart}
+        onScrollEnd={onScrollEnd}
+      />
+    )
+
+    // 使按钮可见
+    editorScrollTop = 400
+    previewScrollTop = 400
+    act(() => {
+      editorElement.dispatchEvent(new Event('scroll'))
+    })
+
+    fireEvent.click(screen.getByLabelText('回到顶部'))
+
+    expect(onScrollStart).toHaveBeenCalledTimes(1)
+    expect(onScrollEnd).not.toHaveBeenCalled()
+
+    // Run all animation frames until both reach top
+    act(() => {
+      flushAllRAFUntilDone()
+    })
+
+    expect(editorScrollTop).toBe(0)
+    expect(previewScrollTop).toBe(0)
+    expect(onScrollEnd).toHaveBeenCalledTimes(1)
+  })
+
+  it('should handle already-at-top elements immediately', () => {
+    const onScrollEnd = vi.fn()
+
+    render(
+      <BackToTop
+        editorRef={editorRef}
+        previewRef={previewRef}
+        onScrollEnd={onScrollEnd}
+      />
+    )
+
+    // 使按钮可见（只有编辑器滚动了）
+    editorScrollTop = 400
+    previewScrollTop = 0
+    act(() => {
+      editorElement.dispatchEvent(new Event('scroll'))
+    })
+
+    fireEvent.click(screen.getByLabelText('回到顶部'))
+
+    // Preview is already at 0, so its callback fires immediately.
+    // Editor still needs animation frames.
+    act(() => {
+      flushAllRAFUntilDone()
+    })
+
+    expect(editorScrollTop).toBe(0)
+    expect(onScrollEnd).toHaveBeenCalledTimes(1)
+  })
+
+  it('should progressively reduce scrollTop each frame', () => {
+    render(<BackToTop editorRef={editorRef} previewRef={previewRef} />)
+
+    editorScrollTop = 1000
+    previewScrollTop = 0
+    act(() => {
+      editorElement.dispatchEvent(new Event('scroll'))
+    })
+
+    fireEvent.click(screen.getByLabelText('回到顶部'))
+
+    // Run one frame and check that scrollTop decreased
+    const before = editorScrollTop
+    act(() => {
+      flushRAF()
+    })
+    expect(editorScrollTop).toBeLessThan(before)
+    expect(editorScrollTop).toBeGreaterThanOrEqual(0)
+  })
+
+  it('should cancel previous animation when clicked again', () => {
+    const onScrollEnd = vi.fn()
+
+    render(
+      <BackToTop
+        editorRef={editorRef}
+        previewRef={previewRef}
+        onScrollEnd={onScrollEnd}
+      />
+    )
+
+    editorScrollTop = 1000
+    previewScrollTop = 1000
+    act(() => {
+      editorElement.dispatchEvent(new Event('scroll'))
+    })
+
+    // First click
+    fireEvent.click(screen.getByLabelText('回到顶部'))
+
+    // Run a few frames
+    act(() => {
+      flushRAF()
+      flushRAF()
+    })
+
+    // Second click — should cancel previous animations and start new ones
+    editorScrollTop = 500
+    previewScrollTop = 500
+    fireEvent.click(screen.getByLabelText('回到顶部'))
+
+    act(() => {
+      flushAllRAFUntilDone()
+    })
+
+    expect(editorScrollTop).toBe(0)
+    expect(previewScrollTop).toBe(0)
+    // onScrollEnd should only fire once (from the second click's animation)
+    expect(onScrollEnd).toHaveBeenCalledTimes(1)
+  })
+
+  it('should cleanup animations on unmount', () => {
+    const onScrollEnd = vi.fn()
+
+    const { unmount } = render(
+      <BackToTop
+        editorRef={editorRef}
+        previewRef={previewRef}
+        onScrollEnd={onScrollEnd}
+      />
+    )
+
+    editorScrollTop = 400
+    act(() => {
+      editorElement.dispatchEvent(new Event('scroll'))
+    })
+
+    fireEvent.click(screen.getByLabelText('回到顶部'))
+
+    // Unmount before animation completes
+    unmount()
+
+    // Flush remaining frames — cancelled animations should not call onScrollEnd
+    act(() => {
+      flushAllRAFUntilDone()
+    })
+
+    expect(onScrollEnd).not.toHaveBeenCalled()
   })
 })

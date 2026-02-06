@@ -5,10 +5,12 @@ import { ResizableDivider } from './components/ResizableDivider/ResizableDivider
 import { BackToTop } from './components/BackToTop/BackToTop';
 import { ExportToolbar } from './components/ExportToolbar/ExportToolbar';
 import { ViewModeToggle } from './components/ViewModeToggle/ViewModeToggle';
+import { SyncScrollToggle } from './components/SyncScrollToggle/SyncScrollToggle';
 import { Message } from './components/Message/Message';
 import { useSyncScroll } from './hooks/useSyncScroll';
 import { useImageExport } from './hooks/useImageExport';
 import { useViewMode } from './hooks/useViewMode';
+import { useSyncScrollToggle } from './hooks/useSyncScrollToggle';
 import { DEFAULT_MARKDOWN } from './constants/defaultContent';
 import logoImage from './assets/images/logo.webp';
 import styles from './App.module.css';
@@ -23,8 +25,24 @@ function App() {
   const previewRef = useRef<HTMLDivElement>(null);
   const previewContentRef = useRef<HTMLDivElement>(null);
 
+  // 追踪 ref 更新的版本号，确保在 ref 变化时触发 useSyncScroll
+  const [refVersion, setRefVersion] = useState(0);
+
+  // 使用 ref 而非 state 来暂停同步滚动，确保在同步调用栈中立即生效
+  const syncScrollPausedRef = useRef(false);
+
   // 视图模式管理
-  const { viewMode, showMessage: showFullscreenMessage, handleModeChange, handleMessageClose: handleFullscreenMessageClose } = useViewMode();
+  const {
+    viewMode,
+    contentMode,
+    isFullscreen,
+    showMessage: showFullscreenMessage,
+    handleModeChange,
+    handleMessageClose: handleFullscreenMessageClose
+  } = useViewMode();
+
+  // 同步滚动开关管理
+  const { isSyncScrollEnabled, toggleSyncScroll } = useSyncScrollToggle();
 
   // 监听全屏提示
   useEffect(() => {
@@ -47,10 +65,13 @@ function App() {
   // 处理编辑器滚动容器准备就绪
   const handleEditorScrollerReady = useCallback((scroller: HTMLElement) => {
     (editorScrollerRef as React.MutableRefObject<HTMLElement>).current = scroller;
+    // ref 更新时递增版本号，触发 useSyncScroll 重新执行
+    setRefVersion(v => v + 1);
   }, []);
 
-  // 同步滚动
-  useSyncScroll(editorScrollerRef, previewRef);
+  // 同步滚动（支持开关控制，传递 contentMode 和 refVersion 确保视图切换时重新设置监听器）
+  // 通过 pauseRef 在回到顶部动画期间立即暂停同步，无需等待 React 渲染周期
+  useSyncScroll(editorScrollerRef, previewRef, isSyncScrollEnabled, contentMode, refVersion, syncScrollPausedRef);
 
   // 长图导出
   const { exportAsImage, exportingType, exportResult, clearResult, preload } = useImageExport(previewContentRef);
@@ -82,7 +103,7 @@ function App() {
   return (
     <div className={styles.app} data-view-mode={viewMode} data-transitioning={isTransitioning}>
       {/* Header - 全屏模式下隐藏 */}
-      {viewMode !== 'fullscreen' && (
+      {!isFullscreen && (
         <header className={styles.header} role="banner">
           <div className={styles.headerLeft}>
             <div className={styles.logoWrapper}>
@@ -99,6 +120,8 @@ function App() {
           <nav className={styles.headerToolbar} aria-label="工具栏">
             {/* 视图模式切换 */}
             <ViewModeToggle currentMode={viewMode} onModeChange={handleModeChangeWithTransition} />
+            {/* 同步滚动开关 */}
+            <SyncScrollToggle enabled={isSyncScrollEnabled} onToggle={toggleSyncScroll} />
             {/* 导出工具 */}
             <ExportToolbar
               onDownload={handleDownload}
@@ -113,11 +136,11 @@ function App() {
       {/* Main Content */}
       <main className={styles.main} id="main-content" role="main">
         {/* Editor - 仅预览区时隐藏 */}
-        {viewMode !== 'preview' && (
+        {contentMode !== 'preview' && (
           <section
             className={styles.editorPanel}
             style={{
-              width: viewMode === 'editor' ? '100%' : leftWidth,
+              width: contentMode === 'editor' ? '100%' : leftWidth,
             }}
             aria-label="Markdown 编辑器"
           >
@@ -129,13 +152,13 @@ function App() {
           </section>
         )}
 
-        {/* Divider - 仅在双栏模式和全屏模式下显示 */}
-        {(viewMode === 'both' || viewMode === 'fullscreen') && (
+        {/* Divider - 仅在双栏模式下显示（普通双栏或全屏双栏） */}
+        {contentMode === 'both' && (
           <ResizableDivider onResize={setLeftWidth} />
         )}
 
         {/* Preview - 仅编辑区时隐藏 */}
-        {viewMode !== 'editor' && (
+        {contentMode !== 'editor' && (
           <section
             className={styles.previewPanel}
             aria-label="Markdown 预览"
@@ -146,7 +169,12 @@ function App() {
       </main>
 
       {/* BackToTop */}
-      <BackToTop editorRef={editorScrollerRef} previewRef={previewRef} />
+      <BackToTop
+        editorRef={editorScrollerRef}
+        previewRef={previewRef}
+        onScrollStart={() => { syncScrollPausedRef.current = true; }}
+        onScrollEnd={() => { syncScrollPausedRef.current = false; }}
+      />
 
       {/* 全局消息提示 */}
       {globalMessage && (

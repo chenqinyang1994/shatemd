@@ -116,4 +116,191 @@ describe('useSyncScroll', () => {
     // 应该取消之前的动画帧
     expect(cancelAnimationFrameSpy).toHaveBeenCalled()
   })
+
+  it('should not setup scroll listeners when disabled', () => {
+    const addEventListenerSpy = vi.spyOn(editorElement, 'addEventListener')
+    const previewAddEventListenerSpy = vi.spyOn(previewElement, 'addEventListener')
+
+    renderHook(() => useSyncScroll(editorRef, previewRef, false))
+
+    // 禁用时不应该添加事件监听
+    expect(addEventListenerSpy).not.toHaveBeenCalled()
+    expect(previewAddEventListenerSpy).not.toHaveBeenCalled()
+  })
+
+  it('should enable/disable sync scroll dynamically', () => {
+    const addEventListenerSpy = vi.spyOn(editorElement, 'addEventListener')
+    const removeEventListenerSpy = vi.spyOn(editorElement, 'removeEventListener')
+
+    // 初始禁用
+    const { rerender } = renderHook(
+      ({ enabled }) => useSyncScroll(editorRef, previewRef, enabled),
+      { initialProps: { enabled: false } }
+    )
+
+    expect(addEventListenerSpy).not.toHaveBeenCalled()
+
+    // 启用同步滚动
+    rerender({ enabled: true })
+
+    expect(addEventListenerSpy).toHaveBeenCalled()
+
+    // 再次禁用
+    rerender({ enabled: false })
+
+    expect(removeEventListenerSpy).toHaveBeenCalled()
+  })
+
+  it('should not sync scroll when disabled', () => {
+    renderHook(() => useSyncScroll(editorRef, previewRef, false))
+
+    // 模拟编辑器滚动
+    Object.defineProperty(editorElement, 'scrollTop', { value: 250, writable: true })
+    editorElement.dispatchEvent(new Event('scroll'))
+
+    // 预览区的 scrollTop 应该保持不变
+    expect(previewElement.scrollTop).toBe(0)
+  })
+
+  it('should re-setup listeners when ref.current changes from null to element', () => {
+    const addEventListenerSpy = vi.spyOn(editorElement, 'addEventListener')
+
+    // 初始 ref 为 null
+    const nullPreviewRef = { current: null }
+    const { rerender } = renderHook(
+      ({ previewRef, contentMode, refVersion }) => useSyncScroll(editorRef, previewRef as any, true, contentMode, refVersion),
+      { initialProps: { previewRef: nullPreviewRef, contentMode: 'editor' as const, refVersion: 0 } }
+    )
+
+    // 此时不应该设置监听器（因为 preview 是 null）
+    expect(addEventListenerSpy).not.toHaveBeenCalled()
+
+    // 模拟 Preview 组件挂载，ref.current 从 null 变为元素
+    const mountedPreviewRef = { current: previewElement }
+    rerender({ previewRef: mountedPreviewRef as any, contentMode: 'both' as const, refVersion: 1 })
+
+    // 应该重新设置监听器
+    expect(addEventListenerSpy).toHaveBeenCalled()
+  })
+
+  it('should handle preview unmount and remount correctly', () => {
+    const addEventListenerSpy = vi.spyOn(previewElement, 'addEventListener')
+    const removeEventListenerSpy = vi.spyOn(previewElement, 'removeEventListener')
+
+    // 初始状态：双栏模式，preview 存在
+    const { rerender } = renderHook(
+      ({ previewRef, contentMode, refVersion }) => useSyncScroll(editorRef, previewRef as any, true, contentMode, refVersion),
+      { initialProps: { previewRef, contentMode: 'both' as const, refVersion: 0 } }
+    )
+
+    expect(addEventListenerSpy).toHaveBeenCalled()
+    addEventListenerSpy.mockClear()
+
+    // 模拟切换到"仅编辑"模式，preview 被卸载
+    const nullPreviewRef = { current: null }
+    rerender({ previewRef: nullPreviewRef as any, contentMode: 'editor' as const, refVersion: 0 })
+
+    expect(removeEventListenerSpy).toHaveBeenCalled()
+
+    // 模拟切换回"双栏"模式，preview 重新挂载
+    const remountedPreviewRef = { current: previewElement }
+    rerender({ previewRef: remountedPreviewRef as any, contentMode: 'both' as const, refVersion: 1 })
+
+    // 应该重新设置监听器
+    expect(addEventListenerSpy).toHaveBeenCalled()
+  })
+
+  it('should re-setup listeners when contentMode changes even if ref is same', () => {
+    const addEventListenerSpy = vi.spyOn(previewElement, 'addEventListener')
+    const removeEventListenerSpy = vi.spyOn(previewElement, 'removeEventListener')
+
+    // 初始：双栏模式
+    const { rerender } = renderHook(
+      ({ contentMode, refVersion }) => useSyncScroll(editorRef, previewRef, true, contentMode, refVersion),
+      { initialProps: { contentMode: 'both' as const, refVersion: 0 } }
+    )
+
+    // 应该设置了两个监听器（editor + preview）
+    expect(addEventListenerSpy).toHaveBeenCalled()
+    const initialCallCount = addEventListenerSpy.mock.calls.length
+
+    // 切换到仅编辑（preview ref 变为 null）
+    const nullPreviewRef = { current: null }
+    Object.assign(previewRef, nullPreviewRef)
+    rerender({ contentMode: 'editor' as const, refVersion: 0 })
+
+    expect(removeEventListenerSpy).toHaveBeenCalled()
+
+    // 切换回双栏（preview ref 恢复）
+    Object.assign(previewRef, { current: previewElement })
+    rerender({ contentMode: 'both' as const, refVersion: 1 })
+
+    // 应该重新设置监听器（因为 contentMode 变化了）
+    expect(addEventListenerSpy.mock.calls.length).toBeGreaterThan(initialCallCount)
+  })
+
+  it('should skip sync when pauseRef.current is true', () => {
+    const pauseRef = { current: false }
+
+    renderHook(() => useSyncScroll(editorRef, previewRef, true, 'both', 0, pauseRef))
+
+    // 暂停同步
+    pauseRef.current = true
+
+    // 模拟编辑器滚动
+    Object.defineProperty(editorElement, 'scrollTop', { value: 250, writable: true })
+    editorElement.dispatchEvent(new Event('scroll'))
+
+    // 执行 RAF
+    if (rafCallback) rafCallback(0)
+
+    // 预览区 scrollTop 应保持不变（同步被暂停）
+    expect(previewElement.scrollTop).toBe(0)
+  })
+
+  it('should resume sync when pauseRef.current returns to false', () => {
+    const pauseRef = { current: true }
+
+    renderHook(() => useSyncScroll(editorRef, previewRef, true, 'both', 0, pauseRef))
+
+    // 恢复同步
+    pauseRef.current = false
+
+    // 模拟编辑器滚动
+    Object.defineProperty(editorElement, 'scrollTop', { value: 250, writable: true })
+    editorElement.dispatchEvent(new Event('scroll'))
+
+    // 执行 RAF
+    if (rafCallback) rafCallback(0)
+
+    // 验证 RAF 回调被触发（同步已恢复）
+    expect(rafCallback).not.toBeNull()
+  })
+
+  it('should handle editor unmount and remount correctly (preview-only mode)', () => {
+    const addEventListenerSpy = vi.spyOn(editorElement, 'addEventListener')
+    const removeEventListenerSpy = vi.spyOn(editorElement, 'removeEventListener')
+
+    // 初始状态：双栏模式，editor 和 preview 都存在
+    const { rerender } = renderHook(
+      ({ editorRef, contentMode, refVersion }) => useSyncScroll(editorRef as any, previewRef, true, contentMode, refVersion),
+      { initialProps: { editorRef, contentMode: 'both' as const, refVersion: 0 } }
+    )
+
+    expect(addEventListenerSpy).toHaveBeenCalled()
+    addEventListenerSpy.mockClear()
+
+    // 模拟切换到"仅预览"模式，editor 被卸载
+    const nullEditorRef = { current: null }
+    rerender({ editorRef: nullEditorRef as any, contentMode: 'preview' as const, refVersion: 0 })
+
+    expect(removeEventListenerSpy).toHaveBeenCalled()
+
+    // 模拟切换回"双栏"模式，editor 重新挂载（refVersion 递增）
+    const remountedEditorRef = { current: editorElement }
+    rerender({ editorRef: remountedEditorRef as any, contentMode: 'both' as const, refVersion: 1 })
+
+    // 应该重新设置监听器
+    expect(addEventListenerSpy).toHaveBeenCalled()
+  })
 })

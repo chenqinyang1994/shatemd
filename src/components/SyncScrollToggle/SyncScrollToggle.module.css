@@ -1,0 +1,80 @@
+.syncScrollToggle {
+  display: flex;
+  align-items: center;
+  padding-left: 16px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.buttonWrapper {
+  display: flex;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 3px;
+  border-radius: 6px;
+}
+
+.toggleButton {
+  background: transparent;
+  border: none;
+  width: auto;
+  height: 32px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  /* 默认（关闭）状态：灰白色，低调 */
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s ease;
+  padding: 0 10px;
+  gap: 6px;
+}
+
+/* 关闭状态下的 Hover */
+.toggleButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 🟢 激活（开启）状态：显著的蓝色高亮 */
+.toggleButton.active {
+  /* 淡蓝色背景 */
+  background-color: rgba(88, 166, 255, 0.15);
+  /* 亮蓝色文字和图标 */
+  color: #58a6ff;
+  /* 微妙的蓝色边框光晕，增强立体感 */
+  box-shadow: 0 0 0 1px rgba(88, 166, 255, 0.3) inset;
+  font-weight: 500;
+}
+
+/* 激活状态下的 Hover */
+.toggleButton.active:hover {
+  background-color: rgba(88, 166, 255, 0.25);
+  color: #79c0ff; /* Hover 时更亮一点 */
+}
+
+.toggleButton:focus-visible {
+  outline: 2px solid #58a6ff;
+  outline-offset: -2px;
+}
+
+.text {
+  font-size: 13px;
+  line-height: 1;
+  user-select: none;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .syncScrollToggle {
+    padding-left: 8px;
+  }
+
+  .text {
+    display: none;
+  }
+
+  .toggleButton {
+    width: 32px;
+    padding: 0;
+  }
+}
