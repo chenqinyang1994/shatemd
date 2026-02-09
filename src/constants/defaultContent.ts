@@ -72,7 +72,7 @@ export const DEFAULT_MARKDOWN_EN = `# Welcome to ShareMD 🚀
 
 [ShareMD Website](https://sharemd.top) - \`[Text](URL)\`
 
-![Logo](https://via.placeholder.com/150) - \`![Alt](URL)\`
+![ShareMD Logo](/logo.webp) - \`![Alt](URL)\`
 
 ### Lists
 
@@ -435,7 +435,7 @@ export const DEFAULT_MARKDOWN_ZH = `# 欢迎使用 ShareMD 🚀
 
 [ShareMD 网站](https://sharemd.top) - \`[文本](URL)\`
 
-![Logo](https://via.placeholder.com/150) - \`![替代文本](URL)\`
+![ShareMD Logo](/logo.webp) - \`![替代文本](URL)\`
 
 ### 列表
 

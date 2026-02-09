@@ -149,6 +149,14 @@
   height: auto;
 }
 
+/* Optimize default logo display */
+.previewContent :global(img[src$="logo.webp"]) {
+  width: 120px;
+  height: auto;
+  border-radius: 12px;
+  margin: 8px 0;
+}
+
 .previewContent :global(a) {
   color: #0366d6;
   text-decoration: none;
