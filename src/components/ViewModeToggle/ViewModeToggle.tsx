@@ -30,9 +30,9 @@ export const ViewModeToggle: FC<ViewModeToggleProps> = ({ currentMode, onModeCha
         </svg>
       </button>
 
-      {/* Dual Pane Mode */}
+      {/* Dual Pane Mode - Hidden on Mobile */}
       <button
-        className={`${styles.modeButton} ${currentMode === 'both' ? styles.active : ''}`}
+        className={`${styles.modeButton} ${styles.dualModeButton} ${currentMode === 'both' ? styles.active : ''}`}
         onClick={() => onModeChange('both')}
         data-tooltip={t('viewMode.dual')}
         aria-label={t('viewMode.dual')}
@@ -60,20 +60,28 @@ export const ViewModeToggle: FC<ViewModeToggleProps> = ({ currentMode, onModeCha
         </svg>
       </button>
 
-      {/* Fullscreen */}
+      {/* Fullscreen (Toggle Logic managed by parent) */}
       <button
         className={`${styles.modeButton} ${currentMode === 'fullscreen' ? styles.active : ''}`}
         onClick={() => onModeChange('fullscreen')}
-        data-tooltip={t('viewMode.vertical')}
-        aria-label={t('viewMode.vertical')}
+        data-tooltip={currentMode === 'fullscreen' ? t('fullscreen.exit') : t('viewMode.vertical')}
+        aria-label={currentMode === 'fullscreen' ? t('fullscreen.exit') : t('viewMode.vertical')}
         aria-pressed={currentMode === 'fullscreen'}
       >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-          <path d="M2 5V2H5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M14 5V2H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M14 11V14H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          <path d="M2 11V14H5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-        </svg>
+        {currentMode === 'fullscreen' ? (
+           // Exit Fullscreen Icon
+           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+             <path d="M5.5 10.5v3h-1v-3h-3v-1h4zM10.5 5.5v-3h1v3h3v1h-4zM5.5 5.5h-3v-1h3v-3h1v4zM10.5 10.5h3v1h-3v3h-1v-4z" />
+           </svg>
+        ) : (
+           // Enter Fullscreen Icon
+           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+             <path d="M2 5V2H5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+             <path d="M14 5V2H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+             <path d="M14 11V14H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+             <path d="M2 11V14H5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+           </svg>
+        )}
       </button>
     </div>
   );

@@ -26,10 +26,10 @@
     "copyLabel": "复制"
   },
   "message": {
-    "copySuccess": "✅ 图片已复制到剪贴板！",
-    "copyError": "❌ 复制图片失败",
-    "downloadSuccess": "✅ 图片下载成功！",
-    "downloadError": "❌ 下载图片失败"
+    "copySuccess": "图片已复制到剪贴板",
+    "copyError": "复制图片失败",
+    "downloadSuccess": "图片下载成功",
+    "downloadError": "下载图片失败"
   },
   "backToTop": {
     "title": "回到顶部"
@@ -41,7 +41,9 @@
     "emptyPlaceholder": "开始在左侧编辑器输入 Markdown 内容..."
   },
   "fullscreen": {
-    "exitHint": "按 ESC 退出全屏"
+    "exit": "退出全屏",
+    "exitHintDesktop": "按 ESC 或点击按钮退出全屏",
+    "exitHintMobile": "点击按钮退出全屏"
   },
   "language": {
     "switch": "切换语言",

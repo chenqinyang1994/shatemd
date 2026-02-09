@@ -25,6 +25,7 @@ function App() {
     const savedLanguage = localStorage.getItem('language') || 'en';
     return savedLanguage === 'zh' ? DEFAULT_MARKDOWN_ZH : DEFAULT_MARKDOWN_EN;
   });
+
   const [leftWidth, setLeftWidth] = useState(window.innerWidth / 2);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [globalMessage, setGlobalMessage] = useState<{ content: string; duration?: number } | null>(null);
@@ -46,11 +47,52 @@ function App() {
     isFullscreen,
     showMessage: showFullscreenMessage,
     handleModeChange,
+    exitFullscreen, // Exported from hook
     handleMessageClose: handleFullscreenMessageClose
   } = useViewMode();
 
   // 同步滚动开关管理
   const { isSyncScrollEnabled, toggleSyncScroll } = useSyncScrollToggle();
+
+  // 全屏空闲检测 (Auto-Fade Exit Button)
+  const [isIdle, setIsIdle] = useState(false);
+  const idleTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    // 仅在全屏模式下启用空闲检测
+    if (!isFullscreen) {
+      setIsIdle(false);
+      return;
+    }
+
+    const resetIdleTimer = () => {
+      // 有操作时，立即取消隐身
+      setIsIdle(false);
+
+      if (idleTimerRef.current) {
+        window.clearTimeout(idleTimerRef.current);
+      }
+
+      // 3秒无操作后，进入隐身状态
+      idleTimerRef.current = window.setTimeout(() => {
+        setIsIdle(true);
+      }, 3000);
+    };
+
+    // 初始重置
+    resetIdleTimer();
+
+    // 监听各类交互事件
+    const events = ['mousemove', 'mousedown', 'touchstart', 'touchmove', 'scroll', 'keydown', 'wheel'];
+
+    // 使用 passive: true 提升滚动性能
+    events.forEach(evt => window.addEventListener(evt, resetIdleTimer, { passive: true }));
+
+    return () => {
+      if (idleTimerRef.current) window.clearTimeout(idleTimerRef.current);
+      events.forEach(evt => window.removeEventListener(evt, resetIdleTimer));
+    };
+  }, [isFullscreen]);
 
   // 监听语言切换，仅当编辑器内容为默认内容时才切换
   useEffect(() => {
@@ -72,23 +114,40 @@ function App() {
     };
   }, [i18n, markdown]);
 
-  // 监听全屏提示
+  // 监听全屏提示 (区分 PC/Mobile)
   useEffect(() => {
     if (showFullscreenMessage) {
-      setGlobalMessage({ content: t('fullscreen.exitHint') });
+      const isMobile = window.innerWidth <= 768;
+      const messageKey = isMobile ? 'fullscreen.exitHintMobile' : 'fullscreen.exitHintDesktop';
+      setGlobalMessage({ content: t(messageKey) });
     }
   }, [showFullscreenMessage, t]);
+
+  // 退出全屏并带过渡动画
+  const handleExitFullscreen = useCallback(() => {
+    setIsTransitioning(true);
+    exitFullscreen();
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 300);
+  }, [exitFullscreen]);
 
   // 包装 handleModeChange 以控制过渡动画
   const handleModeChangeWithTransition = useCallback((mode: typeof viewMode) => {
     setIsTransitioning(true);
-    handleModeChange(mode);
+
+    // Smart Toggle: If requesting fullscreen while already in fullscreen, treat as exit
+    if (mode === 'fullscreen' && viewMode === 'fullscreen') {
+      exitFullscreen();
+    } else {
+      handleModeChange(mode);
+    }
 
     // 动画结束后移除过渡状态
     setTimeout(() => {
       setIsTransitioning(false);
     }, 300);
-  }, [handleModeChange]);
+  }, [handleModeChange, viewMode, exitFullscreen]);
 
   // 处理编辑器滚动容器准备就绪
   const handleEditorScrollerReady = useCallback((scroller: HTMLElement) => {
@@ -163,9 +222,23 @@ function App() {
         </header>
       )}
 
+      {/* Floating Exit Fullscreen Button (Visible only in Fullscreen) */}
+      {isFullscreen && (
+        <button
+          className={`${styles.exitFullscreenBtn} ${isIdle ? styles.exitFullscreenBtnHidden : ''}`}
+          onClick={handleExitFullscreen} // Use new handler
+          aria-label={t('fullscreen.exit')}
+          title={t('fullscreen.exit')}
+        >
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M5.5 10.5v3h-1v-3h-3v-1h4zM10.5 5.5v-3h1v3h3v1h-4zM5.5 5.5h-3v-1h3v-3h1v4zM10.5 10.5h3v1h-3v3h-1v-4z" />
+          </svg>
+        </button>
+      )}
+
       {/* Main Content */}
       <main className={styles.main} id="main-content" role="main">
-        {/* Editor - 仅预览区时隐藏 */}
+        {/* Editor - Hide in preview-only mode */}
         {contentMode !== 'preview' && (
           <section
             className={styles.editorPanel}

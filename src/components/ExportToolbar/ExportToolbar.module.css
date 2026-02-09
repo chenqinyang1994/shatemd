@@ -20,10 +20,10 @@
 .exportButton {
   display: flex;
   align-items: center;
-  justify-content: center; /* Center content */
+  justify-content: center;
   gap: 6px;
   height: 32px;
-  width: 80px; /* Fixed width to prevent jitter */
+  width: 80px;
   padding: 0 10px;
   border-radius: 6px;
   background: transparent;
@@ -62,4 +62,25 @@
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .exportToolbar {
+    gap: 2px;
+    margin-left: 8px;
+  }
+
+  .exportToolbar::before {
+    left: -5px;
+  }
+
+  .exportButton {
+    width: 32px;
+    padding: 0;
+    gap: 0;
+  }
+
+  .exportButton span {
+    display: none;
+  }
 }

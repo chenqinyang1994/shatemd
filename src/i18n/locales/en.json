@@ -26,10 +26,10 @@
     "copyLabel": "Copy"
   },
   "message": {
-    "copySuccess": "✅ Image copied to clipboard!",
-    "copyError": "❌ Failed to copy image",
-    "downloadSuccess": "✅ Image downloaded successfully!",
-    "downloadError": "❌ Failed to download image"
+    "copySuccess": "Image copied to clipboard",
+    "copyError": "Failed to copy image",
+    "downloadSuccess": "Image downloaded successfully",
+    "downloadError": "Failed to download image"
   },
   "backToTop": {
     "title": "Back to Top"
@@ -41,7 +41,9 @@
     "emptyPlaceholder": "Start typing in the left editor to see the preview..."
   },
   "fullscreen": {
-    "exitHint": "Press ESC to exit fullscreen"
+    "exit": "Exit Fullscreen",
+    "exitHintDesktop": "Press ESC or click button to exit fullscreen",
+    "exitHintMobile": "Tap button to exit fullscreen"
   },
   "language": {
     "switch": "Switch Language",

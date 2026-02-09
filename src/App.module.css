@@ -66,8 +66,12 @@
   align-items: center;
 }
 
-/* 响应式：小屏幕优化 */
+/* 响应式：移动端优化 */
 @media (max-width: 768px) {
+  .header {
+    padding: 0 12px;
+  }
+
   .logoWrapper {
     width: 32px;
     height: 32px;
@@ -75,11 +79,12 @@
   }
 
   .title {
-    font-size: 16px;
+    display: none;
   }
 
   .headerLeft {
-    gap: 8px;
+    gap: 0;
+    margin-right: 8px;
   }
 }
 
@@ -109,7 +114,6 @@
 }
 
 /* 视图模式切换时的平滑过渡动画 */
-/* 只在模式切换时添加动画，拖动时不触发 */
 .app[data-transitioning="true"] .editorPanel {
   transition: width 0.3s ease, opacity 0.3s ease;
 }
@@ -126,4 +130,48 @@
 /* 仅预览区模式 */
 .app[data-view-mode="preview"] .previewPanel {
   width: 100%;
+}
+
+/* 悬浮退出全屏按钮 */
+.exitFullscreenBtn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: rgba(36, 41, 46, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+  /* 交互过渡 */
+  transition: all 0.2s ease, opacity 0.5s ease, transform 0.5s ease;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.exitFullscreenBtn:hover {
+  background-color: rgba(36, 41, 46, 0.9);
+  transform: scale(1.05);
+  /* Hover 时强制显示，防止在鼠标悬停时消失 */
+  opacity: 1 !important;
+}
+
+.exitFullscreenBtn:active {
+  transform: scale(0.95);
+}
+
+/* 隐身状态 */
+.exitFullscreenBtnHidden {
+  opacity: 0;
+  pointer-events: none; /* 穿透点击，避免误触 */
+  transform: scale(0.9);
 }

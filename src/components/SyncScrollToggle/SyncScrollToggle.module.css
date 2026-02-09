@@ -1,10 +1,10 @@
 .syncScrollToggle {
   display: flex;
   align-items: center;
-  justify-content: center; /* Center content */
+  justify-content: center;
   gap: 6px;
   height: 32px;
-  width: 120px; /* Fixed width to fit "Sync Scroll" */
+  width: 120px;
   padding: 0 10px;
   border-radius: 6px;
   background: transparent;
@@ -51,4 +51,22 @@
 
 .syncScrollToggle svg {
   flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .syncScrollToggle {
+    width: 32px; /* Revert to icon-only size */
+    padding: 0;
+    gap: 0;
+    margin-left: 8px; /* Reduce margin */
+  }
+
+  /* Adjust divider position for smaller margin */
+  .syncScrollToggle::before {
+    left: -5px;
+  }
+
+  .syncScrollToggle span {
+    display: none; /* Hide text */
+  }
 }

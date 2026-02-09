@@ -358,7 +358,7 @@ Have questions or suggestions?
 
 **Made with ❤️ by ShareMD Team**
 
-**Version 1.0.0** | **Last updated:** 2024-02-06
+**Version 1.0.0** | **Last updated:** 2026-02-09
 `;
 
 // Default Markdown content in Chinese
@@ -721,7 +721,7 @@ https://sharemd.top
 
 **Made with ❤️ by ShareMD Team**
 
-**版本 1.0.0** | **最后更新：** 2024-02-06
+**版本 1.0.0** | **最后更新：** 2026-02-09
 `;
 
 // Export default based on browser language or saved preference

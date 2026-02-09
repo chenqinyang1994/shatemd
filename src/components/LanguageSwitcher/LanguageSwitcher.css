@@ -4,7 +4,7 @@
   justify-content: center;
   gap: 6px;
   height: 32px;
-  width: 80px; /* Fixed width for consistency and jitter prevention */
+  width: 80px;
   padding: 0 10px;
   margin-left: 16px;
   border-radius: 6px;
@@ -50,4 +50,23 @@
   min-width: 20px;
   text-align: center;
   font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+}
+
+@media (max-width: 768px) {
+  .language-switcher {
+    width: auto; /* Allow auto width */
+    min-width: 32px;
+    padding: 0 6px;
+    gap: 4px;
+    margin-left: 8px;
+  }
+
+  .language-switcher::before {
+    left: -5px;
+  }
+
+  /* Hide Icon on mobile to save space, keep text "EN" */
+  .language-switcher svg {
+    display: none;
+  }
 }

@@ -5,12 +5,22 @@ export type ViewMode = 'both' | 'editor' | 'preview' | 'fullscreen';
 // 内容模式类型（排除 fullscreen）
 export type ContentMode = 'both' | 'editor' | 'preview';
 
+const getInitialMode = (): ViewMode => {
+  // Mobile defaults to editor only
+  if (typeof window !== 'undefined' && window.innerWidth <= 768) {
+    return 'editor';
+  }
+  return 'both';
+};
+
 export const useViewMode = () => {
-  const [viewMode, setViewMode] = useState<ViewMode>('both');
+  const [viewMode, setViewMode] = useState<ViewMode>(getInitialMode);
   const [showMessage, setShowMessage] = useState(false);
 
   // 记录进入全屏前的内容模式
-  const previousModeRef = useRef<ContentMode>('both');
+  const previousModeRef = useRef<ContentMode>(
+    (typeof window !== 'undefined' && window.innerWidth <= 768) ? 'editor' : 'both'
+  );
 
   // ESC 键监听 - 退出全屏
   useEffect(() => {
@@ -49,6 +59,13 @@ export const useViewMode = () => {
     setViewMode(mode);
   };
 
+  // 新增：专门用于退出全屏并恢复之前模式的方法
+  const exitFullscreen = () => {
+    if (viewMode === 'fullscreen') {
+      setViewMode(previousModeRef.current);
+    }
+  };
+
   const handleMessageClose = () => {
     setShowMessage(false);
   };
@@ -70,6 +87,7 @@ export const useViewMode = () => {
     isFullscreen,
     showMessage,
     handleModeChange,
+    exitFullscreen, // Export this
     handleMessageClose,
   };
 };
