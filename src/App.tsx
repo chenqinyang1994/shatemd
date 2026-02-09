@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Editor } from './components/Editor/Editor';
 import { Preview } from './components/Preview/Preview';
 import { ResizableDivider } from './components/ResizableDivider/ResizableDivider';
@@ -6,6 +7,7 @@ import { BackToTop } from './components/BackToTop/BackToTop';
 import { ExportToolbar } from './components/ExportToolbar/ExportToolbar';
 import { ViewModeToggle } from './components/ViewModeToggle/ViewModeToggle';
 import { SyncScrollToggle } from './components/SyncScrollToggle/SyncScrollToggle';
+import { LanguageSwitcher } from './components/LanguageSwitcher/LanguageSwitcher';
 import { Message } from './components/Message/Message';
 import { useSyncScroll } from './hooks/useSyncScroll';
 import { useImageExport } from './hooks/useImageExport';
@@ -16,6 +18,7 @@ import logoImage from './assets/images/logo.webp';
 import styles from './App.module.css';
 
 function App() {
+  const { t } = useTranslation();
   const [markdown, setMarkdown] = useState(DEFAULT_MARKDOWN);
   const [leftWidth, setLeftWidth] = useState(window.innerWidth / 2);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -115,20 +118,22 @@ function App() {
                 height="40"
               />
             </div>
-            <h1 className={styles.title}>ShareMD</h1>
+            <h1 className={styles.title}>{t('header.logo')}</h1>
           </div>
-          <nav className={styles.headerToolbar} aria-label="工具栏">
-            {/* 视图模式切换 */}
+          <nav className={styles.headerToolbar} aria-label="Toolbar">
+            {/* View Mode Toggle */}
             <ViewModeToggle currentMode={viewMode} onModeChange={handleModeChangeWithTransition} />
-            {/* 同步滚动开关 */}
+            {/* Sync Scroll Toggle */}
             <SyncScrollToggle enabled={isSyncScrollEnabled} onToggle={toggleSyncScroll} />
-            {/* 导出工具 */}
+            {/* Export Toolbar */}
             <ExportToolbar
               onDownload={handleDownload}
               onCopy={handleCopy}
-              onMouseEnter={preload} // 鼠标移入时预加载
+              onMouseEnter={preload}
               exportingType={exportingType}
             />
+            {/* Language Switcher */}
+            <LanguageSwitcher />
           </nav>
         </header>
       )}
@@ -142,7 +147,7 @@ function App() {
             style={{
               width: contentMode === 'editor' ? '100%' : leftWidth,
             }}
-            aria-label="Markdown 编辑器"
+            aria-label="Markdown Editor"
           >
             <Editor
               value={markdown}
@@ -152,16 +157,16 @@ function App() {
           </section>
         )}
 
-        {/* Divider - 仅在双栏模式下显示（普通双栏或全屏双栏） */}
+        {/* Divider - Only show in dual-pane mode */}
         {contentMode === 'both' && (
           <ResizableDivider onResize={setLeftWidth} />
         )}
 
-        {/* Preview - 仅编辑区时隐藏 */}
+        {/* Preview - Hide in editor-only mode */}
         {contentMode !== 'editor' && (
           <section
             className={styles.previewPanel}
-            aria-label="Markdown 预览"
+            aria-label="Markdown Preview"
           >
             <Preview content={markdown} previewRef={previewRef} previewContentRef={previewContentRef} />
           </section>

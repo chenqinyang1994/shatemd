@@ -1,79 +1,67 @@
+import { FC, MouseEventHandler } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './ExportToolbar.module.css';
-import { ExportType } from '../../hooks/useImageExport';
+
+export type ExportingType = 'download' | 'copy' | null;
 
 interface ExportToolbarProps {
   onDownload: () => void;
   onCopy: () => void;
-  onMouseEnter?: () => void;
-  exportingType: ExportType;
+  onMouseEnter?: MouseEventHandler<HTMLDivElement>;
+  exportingType: ExportingType;
 }
 
-const LoadingSpinner = () => (
-  <div className={styles.loadingIcon}>
-    <svg className={styles.spinner} width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" strokeOpacity="0.2" />
-      <path d="M12 2C6.47715 2 2 6.47715 2 12" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
-    </svg>
-  </div>
-);
-
-export const ExportToolbar: React.FC<ExportToolbarProps> = ({
+export const ExportToolbar: FC<ExportToolbarProps> = ({
   onDownload,
   onCopy,
   onMouseEnter,
   exportingType,
 }) => {
-  const isDownloading = exportingType === 'download';
-  const isCopying = exportingType === 'copy';
-  const isBusy = exportingType !== null;
+  const { t } = useTranslation();
+  const isExporting = exportingType !== null;
 
   return (
-    <div className={styles.toolbar} onMouseEnter={onMouseEnter}>
+    <div
+      className={styles.exportToolbar}
+      role="toolbar"
+      aria-label="Export options"
+      onMouseEnter={onMouseEnter}
+    >
+      {/* Download Button */}
       <button
-        className={`${styles.button} ${styles.downloadButton}`}
+        className={styles.exportButton}
         onClick={onDownload}
-        disabled={isBusy}
-        data-tooltip="将预览内容生成长图并下载"
+        disabled={isExporting}
+        aria-label={t('export.download')}
       >
-        {isDownloading ? (
-          <>
-            <LoadingSpinner />
-            生成中...
-          </>
+        {exportingType === 'download' ? (
+          <span className={styles.spinner} aria-hidden="true" />
         ) : (
-          <>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M8.5 1.5V11.293L11.146 8.646L12.207 9.707L8 13.914L3.793 9.707L4.854 8.646L7.5 11.293V1.5H8.5Z" />
-              <path d="M2 14.5H14V15.5H2V14.5Z" />
-            </svg>
-            下载图片
-          </>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
         )}
+        <span>{exportingType === 'download' ? t('export.downloading') : t('export.download')}</span>
       </button>
 
+      {/* Copy Button */}
       <button
-        className={`${styles.button} ${styles.copyButton}`}
+        className={styles.exportButton}
         onClick={onCopy}
-        disabled={isBusy}
-        data-tooltip="将预览长图复制到剪贴板"
+        disabled={isExporting}
+        aria-label={t('export.copy')}
       >
-        {isCopying ? (
-          <>
-            <LoadingSpinner />
-            复制中...
-          </>
+        {exportingType === 'copy' ? (
+          <span className={styles.spinner} aria-hidden="true" />
         ) : (
-          <>
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-              <path d="M4 2H12V3H4V2Z" />
-              <path d="M4 5H12V6H4V5Z" />
-              <path d="M4 8H12V9H4V8Z" />
-              <path d="M4 11H9V12H4V11Z" />
-              <path d="M2 0V14H14V0H2ZM13 13H3V1H13V13Z" />
-            </svg>
-            复制图片
-          </>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+          </svg>
         )}
+        <span>{exportingType === 'copy' ? t('export.copying') : t('export.copy')}</span>
       </button>
     </div>
   );

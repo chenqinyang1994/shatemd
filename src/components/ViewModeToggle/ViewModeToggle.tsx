@@ -1,4 +1,5 @@
 import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from './ViewModeToggle.module.css';
 
 export type ViewMode = 'both' | 'editor' | 'preview' | 'fullscreen';
@@ -9,14 +10,16 @@ interface ViewModeToggleProps {
 }
 
 export const ViewModeToggle: FC<ViewModeToggleProps> = ({ currentMode, onModeChange }) => {
+  const { t } = useTranslation();
+
   return (
-    <div className={styles.viewModeToggle} role="group" aria-label="视图模式切换">
-      {/* 仅编辑区 */}
+    <div className={styles.viewModeToggle} role="group" aria-label={t('viewMode.dual')}>
+      {/* Editor Only */}
       <button
         className={`${styles.modeButton} ${currentMode === 'editor' ? styles.active : ''}`}
         onClick={() => onModeChange('editor')}
-        data-tooltip="仅编辑区"
-        aria-label="仅编辑区"
+        data-tooltip={t('viewMode.edit')}
+        aria-label={t('viewMode.edit')}
         aria-pressed={currentMode === 'editor'}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
@@ -27,12 +30,12 @@ export const ViewModeToggle: FC<ViewModeToggleProps> = ({ currentMode, onModeCha
         </svg>
       </button>
 
-      {/* 双栏模式 */}
+      {/* Dual Pane Mode */}
       <button
         className={`${styles.modeButton} ${currentMode === 'both' ? styles.active : ''}`}
         onClick={() => onModeChange('both')}
-        data-tooltip="双栏模式"
-        aria-label="双栏模式"
+        data-tooltip={t('viewMode.dual')}
+        aria-label={t('viewMode.dual')}
         aria-pressed={currentMode === 'both'}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
@@ -41,12 +44,12 @@ export const ViewModeToggle: FC<ViewModeToggleProps> = ({ currentMode, onModeCha
         </svg>
       </button>
 
-      {/* 仅预览区 */}
+      {/* Preview Only */}
       <button
         className={`${styles.modeButton} ${currentMode === 'preview' ? styles.active : ''}`}
         onClick={() => onModeChange('preview')}
-        data-tooltip="仅预览区"
-        aria-label="仅预览区"
+        data-tooltip={t('viewMode.preview')}
+        aria-label={t('viewMode.preview')}
         aria-pressed={currentMode === 'preview'}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
@@ -57,12 +60,12 @@ export const ViewModeToggle: FC<ViewModeToggleProps> = ({ currentMode, onModeCha
         </svg>
       </button>
 
-      {/* 全屏 */}
+      {/* Fullscreen */}
       <button
         className={`${styles.modeButton} ${currentMode === 'fullscreen' ? styles.active : ''}`}
         onClick={() => onModeChange('fullscreen')}
-        data-tooltip="全屏模式"
-        aria-label="全屏模式"
+        data-tooltip={t('viewMode.vertical')}
+        aria-label={t('viewMode.vertical')}
         aria-pressed={currentMode === 'fullscreen'}
       >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">

@@ -1,0 +1,42 @@
+{
+  "app": {
+    "title": "ShareMD",
+    "description": "现代化 Markdown 编辑器"
+  },
+  "header": {
+    "logo": "ShareMD"
+  },
+  "viewMode": {
+    "dual": "双栏模式",
+    "edit": "纯编辑",
+    "preview": "纯预览",
+    "vertical": "垂直布局"
+  },
+  "syncScroll": {
+    "enabled": "同步滚动：开",
+    "disabled": "同步滚动：关"
+  },
+  "export": {
+    "download": "下载图片",
+    "copy": "复制到剪贴板",
+    "downloading": "生成中...",
+    "copying": "复制中..."
+  },
+  "message": {
+    "copySuccess": "✅ 图片已复制到剪贴板！",
+    "copyError": "❌ 复制图片失败",
+    "downloadSuccess": "✅ 图片下载成功！",
+    "downloadError": "❌ 下载图片失败"
+  },
+  "backToTop": {
+    "title": "回到顶部"
+  },
+  "editor": {
+    "placeholder": "# 欢迎使用 ShareMD\n\n在这里开始编写你的 Markdown 内容...\n\n## 功能特性\n\n- 实时预览\n- 同步滚动\n- 导出图片\n- 支持 GitHub Flavored Markdown\n\n## 示例\n\n```javascript\nconst greeting = '你好，ShareMD！';\nconsole.log(greeting);\n```\n\n**粗体** *斜体* ~~删除线~~\n\n> 引用块\n\n- 列表项 1\n- 列表项 2\n\n[链接](https://sharemd.top)\n"
+  },
+  "language": {
+    "switch": "切换语言",
+    "en": "English",
+    "zh": "中文"
+  }
+}
