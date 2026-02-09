@@ -33,6 +33,7 @@ export const ExportToolbar: FC<ExportToolbarProps> = ({
         onClick={onDownload}
         disabled={isExporting}
         aria-label={t('export.download')}
+        title={t('export.download')}
       >
         {exportingType === 'download' ? (
           <span className={styles.spinner} aria-hidden="true" />
@@ -43,7 +44,6 @@ export const ExportToolbar: FC<ExportToolbarProps> = ({
             <line x1="12" y1="15" x2="12" y2="3" />
           </svg>
         )}
-        <span>{exportingType === 'download' ? t('export.downloading') : t('export.download')}</span>
       </button>
 
       {/* Copy Button */}
@@ -52,6 +52,7 @@ export const ExportToolbar: FC<ExportToolbarProps> = ({
         onClick={onCopy}
         disabled={isExporting}
         aria-label={t('export.copy')}
+        title={t('export.copy')}
       >
         {exportingType === 'copy' ? (
           <span className={styles.spinner} aria-hidden="true" />
@@ -61,7 +62,6 @@ export const ExportToolbar: FC<ExportToolbarProps> = ({
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
           </svg>
         )}
-        <span>{exportingType === 'copy' ? t('export.copying') : t('export.copy')}</span>
       </button>
     </div>
   );

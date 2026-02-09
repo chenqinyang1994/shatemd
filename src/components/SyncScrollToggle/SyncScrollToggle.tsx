@@ -9,13 +9,17 @@ interface SyncScrollToggleProps {
 
 export const SyncScrollToggle: FC<SyncScrollToggleProps> = ({ enabled, onToggle }) => {
   const { t } = useTranslation();
+  const label = enabled ? t('syncScroll.enabled') : t('syncScroll.disabled');
+  // Remove the "Sync Scroll: " prefix for tooltip if present, or just use full string
+  // The current translation is "Sync Scroll: ON" / "Sync Scroll: OFF" or Chinese equivalent.
+  // Ideally, we just want "Enable Sync Scroll" or "Disable Sync Scroll" for tooltip.
 
   return (
     <button
       className={`${styles.syncScrollToggle} ${enabled ? styles.enabled : ''}`}
       onClick={onToggle}
-      aria-label={enabled ? t('syncScroll.enabled') : t('syncScroll.disabled')}
-      data-tooltip={enabled ? t('syncScroll.enabled') : t('syncScroll.disabled')}
+      aria-label={label}
+      title={label}
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         {enabled ? (
@@ -31,7 +35,6 @@ export const SyncScrollToggle: FC<SyncScrollToggleProps> = ({ enabled, onToggle 
           </>
         )}
       </svg>
-      <span>{enabled ? t('syncScroll.enabled').split(':')[0] : t('syncScroll.disabled').split(':')[0]}</span>
     </button>
   );
 };

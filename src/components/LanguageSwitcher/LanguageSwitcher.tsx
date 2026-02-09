@@ -26,18 +26,6 @@ export function LanguageSwitcher() {
           'ShareMD is a powerful online Markdown editor with real-time preview, sync scrolling, and one-click image export. Completely free, no registration required, supports GitHub Flavored Markdown.'
         );
       }
-
-      const ogTitle = document.querySelector('meta[property="og:title"]');
-      if (ogTitle) {
-        ogTitle.setAttribute('content', 'ShareMD - Free Online Markdown Editor');
-      }
-
-      const ogDescription = document.querySelector('meta[property="og:description"]');
-      if (ogDescription) {
-        ogDescription.setAttribute('content',
-          'Powerful online Markdown editor with real-time preview, sync scrolling, and one-click image export. Completely free, no registration required.'
-        );
-      }
     } else {
       document.title = 'ShareMD - 免费在线 Markdown 编辑器 | 实时预览 | 一键生成长图';
 
@@ -45,18 +33,6 @@ export function LanguageSwitcher() {
       if (description) {
         description.setAttribute('content',
           'ShareMD 是一款功能强大的在线 Markdown 编辑器，支持实时预览、双向同步滚动、一键生成长图。完全免费，无需注册，支持 GitHub Flavored Markdown。'
-        );
-      }
-
-      const ogTitle = document.querySelector('meta[property="og:title"]');
-      if (ogTitle) {
-        ogTitle.setAttribute('content', 'ShareMD - 免费在线 Markdown 编辑器');
-      }
-
-      const ogDescription = document.querySelector('meta[property="og:description"]');
-      if (ogDescription) {
-        ogDescription.setAttribute('content',
-          '功能强大的在线 Markdown 编辑器，支持实时预览、同步滚动、一键生成长图。完全免费，无需注册。'
         );
       }
     }
@@ -70,8 +46,8 @@ export function LanguageSwitcher() {
       aria-label={t('language.switch')}
     >
       <svg
-        width="20"
-        height="20"
+        width="16"
+        height="16"
         viewBox="0 0 24 24"
         fill="none"
         stroke="currentColor"
