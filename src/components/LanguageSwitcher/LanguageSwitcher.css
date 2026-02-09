@@ -1,26 +1,36 @@
 .language-switcher {
-  background: transparent;
-  border: none;
-  height: 32px;
-  border-radius: 4px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  margin-left: 16px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.6);
+  color: #c9d1d9;
   transition: all 0.2s ease;
-  padding: 0 8px;
-  gap: 4px;
-  margin-left: 8px;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  position: relative;
+}
+
+/* Vertical Divider */
+.language-switcher::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .language-switcher:hover {
   background-color: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
+  color: #ffffff;
 }
 
 .language-switcher:active {
@@ -30,4 +40,12 @@
 .language-switcher svg {
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
+}
+
+.language-switcher span {
+  display: inline-block;
+  min-width: 24px;
+  text-align: center;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
 }

@@ -14,13 +14,16 @@
   },
   "syncScroll": {
     "enabled": "Sync Scroll: ON",
-    "disabled": "Sync Scroll: OFF"
+    "disabled": "Sync Scroll: OFF",
+    "label": "Sync"
   },
   "export": {
     "download": "Download Image",
     "copy": "Copy to Clipboard",
     "downloading": "Generating...",
-    "copying": "Copying..."
+    "copying": "Copying...",
+    "saveLabel": "Save",
+    "copyLabel": "Copy"
   },
   "message": {
     "copySuccess": "✅ Image copied to clipboard!",

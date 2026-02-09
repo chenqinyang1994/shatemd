@@ -1,31 +1,42 @@
 .exportToolbar {
   display: flex;
   align-items: center;
-  gap: 2px;
-  margin-left: 8px;
-  padding-left: 8px;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  gap: 4px;
+  margin-left: 16px;
+  position: relative;
+}
+
+/* Vertical Divider */
+.exportToolbar::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .exportButton {
-  background: transparent;
-  border: none;
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 10px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid transparent;
   cursor: pointer;
-  color: rgba(255, 255, 255, 0.6);
+  color: #c9d1d9;
   transition: all 0.2s ease;
-  padding: 0;
-  position: relative;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 .exportButton:hover:not(:disabled) {
   background-color: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.9);
+  color: #ffffff;
 }
 
 .exportButton:active:not(:disabled) {
@@ -33,13 +44,13 @@
 }
 
 .exportButton:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: wait;
 }
 
 .spinner {
-  width: 16px;
-  height: 16px;
+  width: 14px;
+  height: 14px;
   border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: #fff;
   border-radius: 50%;

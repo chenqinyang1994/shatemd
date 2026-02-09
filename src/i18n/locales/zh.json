@@ -14,13 +14,16 @@
   },
   "syncScroll": {
     "enabled": "同步滚动：开",
-    "disabled": "同步滚动：关"
+    "disabled": "同步滚动：关",
+    "label": "同步"
   },
   "export": {
     "download": "下载图片",
     "copy": "复制到剪贴板",
     "downloading": "生成中...",
-    "copying": "复制中..."
+    "copying": "复制中...",
+    "saveLabel": "保存",
+    "copyLabel": "复制"
   },
   "message": {
     "copySuccess": "✅ 图片已复制到剪贴板！",
