@@ -3,12 +3,4 @@
 User-agent: *
 Allow: /
 
-# 站点地图
 Sitemap: https://sharemd.top/sitemap.xml
-
-# 禁止抓取的路径（如果有）
-# Disallow: /api/
-# Disallow: /admin/
-
-# 抓取延迟（可选，防止服务器压力过大）
-Crawl-delay: 1
