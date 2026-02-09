@@ -27,3 +27,6 @@ coverage
 *.sw?
 
 .deepvcode
+
+# SEO scripts with sensitive tokens
+push-to-baidu.sh
