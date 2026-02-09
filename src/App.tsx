@@ -13,13 +13,18 @@ import { useSyncScroll } from './hooks/useSyncScroll';
 import { useImageExport } from './hooks/useImageExport';
 import { useViewMode } from './hooks/useViewMode';
 import { useSyncScrollToggle } from './hooks/useSyncScrollToggle';
-import { DEFAULT_MARKDOWN } from './constants/defaultContent';
+import { DEFAULT_MARKDOWN_EN, DEFAULT_MARKDOWN_ZH } from './constants/defaultContent';
 import logoImage from './assets/images/logo.webp';
 import styles from './App.module.css';
 
 function App() {
-  const { t } = useTranslation();
-  const [markdown, setMarkdown] = useState(DEFAULT_MARKDOWN);
+  const { t, i18n } = useTranslation();
+
+  // Initialize markdown with language-specific default content
+  const [markdown, setMarkdown] = useState(() => {
+    const savedLanguage = localStorage.getItem('language') || 'en';
+    return savedLanguage === 'zh' ? DEFAULT_MARKDOWN_ZH : DEFAULT_MARKDOWN_EN;
+  });
   const [leftWidth, setLeftWidth] = useState(window.innerWidth / 2);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [globalMessage, setGlobalMessage] = useState<{ content: string; duration?: number } | null>(null);
@@ -46,6 +51,26 @@ function App() {
 
   // 同步滚动开关管理
   const { isSyncScrollEnabled, toggleSyncScroll } = useSyncScrollToggle();
+
+  // 监听语言切换，仅当编辑器内容为默认内容时才切换
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      // Check if current content is one of the default contents
+      const isDefaultContent = markdown === DEFAULT_MARKDOWN_EN || markdown === DEFAULT_MARKDOWN_ZH;
+
+      if (isDefaultContent) {
+        // Switch to the appropriate default content based on new language
+        const newContent = i18n.language === 'zh' ? DEFAULT_MARKDOWN_ZH : DEFAULT_MARKDOWN_EN;
+        setMarkdown(newContent);
+      }
+    };
+
+    i18n.on('languageChanged', handleLanguageChange);
+
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange);
+    };
+  }, [i18n, markdown]);
 
   // 监听全屏提示
   useEffect(() => {
