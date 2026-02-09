@@ -4,9 +4,9 @@
   bottom: 24px;
   width: 40px;
   height: 40px;
-  border-radius: 8px; /* 与导航栏按钮风格一致的圆角 */
-  background-color: rgba(36, 41, 46, 0.7); /* 深色半透明 */
-  backdrop-filter: blur(8px); /* 毛玻璃效果 */
+  border-radius: 8px;
+  background-color: rgba(36, 41, 46, 0.7);
+  backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: rgba(255, 255, 255, 0.8);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -30,7 +30,7 @@
 .backToTop:hover {
   background-color: rgba(36, 41, 46, 0.9);
   color: #fff;
-  transform: translateY(-4px); /* 轻微上浮 */
+  transform: translateY(-4px);
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   border-color: rgba(255, 255, 255, 0.2);
 }
@@ -38,6 +38,57 @@
 .backToTop:active {
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Tooltip Body */
+.backToTop::before {
+  content: attr(data-label);
+  position: absolute;
+  right: calc(100% + 12px); /* Position 12px to the left */
+  top: 50%;
+  transform: translateY(-50%) translateX(-8px); /* Start state: shifted left */
+  padding: 6px 10px;
+  background-color: #24292e;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tooltip Arrow */
+.backToTop::after {
+  content: '';
+  position: absolute;
+  right: calc(100% + 4px); /* Arrow tip position */
+  top: 50%;
+  transform: translateY(-50%) translateX(-8px); /* Start state: shifted left */
+  border-width: 4px;
+  border-style: solid;
+  border-color: transparent transparent transparent #24292e; /* Pointing right */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tooltip Hover State */
+.backToTop:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+
+.backToTop:hover::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
 }
 
 @keyframes slideUpFade {

@@ -84,7 +84,7 @@ export function BackToTop({ editorRef, previewRef, onScrollStart, onScrollEnd }:
       className={styles.backToTop}
       onClick={scrollToTop}
       aria-label={t('backToTop.title')}
-      title={t('backToTop.title')}
+      data-label={t('backToTop.title')}
     >
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
         <polyline points="18 15 12 9 6 15" />

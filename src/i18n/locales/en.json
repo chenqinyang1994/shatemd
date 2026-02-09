@@ -10,7 +10,7 @@
     "dual": "Dual View",
     "edit": "Editor Only",
     "preview": "Preview Only",
-    "vertical": "Vertical Layout"
+    "vertical": "Fullscreen"
   },
   "syncScroll": {
     "enabled": "Sync Scroll: ON",

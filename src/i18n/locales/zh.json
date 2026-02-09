@@ -8,9 +8,9 @@
   },
   "viewMode": {
     "dual": "双栏模式",
-    "edit": "纯编辑",
-    "preview": "纯预览",
-    "vertical": "垂直布局"
+    "edit": "仅编辑区",
+    "preview": "仅预览区",
+    "vertical": "全屏"
   },
   "syncScroll": {
     "enabled": "同步滚动：开",
